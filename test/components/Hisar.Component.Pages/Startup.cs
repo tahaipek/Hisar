@@ -1,51 +1,49 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NetCoreStack.Data.Context;
 using NetCoreStack.Hisar;
+using NetCoreStack.Hisar.Server;
+using System.Threading.Tasks;
 
-namespace Admin.Tabler.Hosting
+namespace Hisar.Component.Pages
 {
     public class Startup
     {
+        public IConfigurationRoot Configuration { get; }
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; }
-
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IViewRenderService, ViewRenderService>();
+#if !RELEASE
+            services.AddCliSocket<Startup>();
+#endif
 
-            services.AddMenuRenderer<TablerMenuItemsRenderer>();
-            services.AddMvc();
-
-            var registryAssemblyPath = typeof(Microsoft.Win32.Registry).Assembly.Location;
-        }
-
-        public static void ConfigureRoutes(IRouteBuilder routes)
-        {
-            routes.MapRoute(
-                name: "areaDefault",
-                template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-            routes.MapRoute(
-                name: "default",
-                template: "{controller=Home}/{action=Index}/{id?}");
+            services.AddHisarMongoDbContext<MongoDbContext>(Configuration);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+#if !RELEASE
+            app.UseCliProxy();
+#endif
+
+            Task.Run(() => BsonDataInitializer.InitializePagesMongoDb(app.ApplicationServices));
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -57,9 +55,15 @@ namespace Admin.Tabler.Hosting
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            app.UseCors();
-            app.UseMvc(ConfigureRoutes);
+
+            app.UseStaticFiles();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
-
 }

@@ -1,0 +1,185 @@
+﻿@using NetCoreStack.Mvc
+
+@model PageCreateOrEditViewModel
+@{
+    string gjsContainerId = $"gjs-{DateTime.Now.ToFileTimeUtc()}";
+    PageCreateOrEditViewModel viewModel = Model;
+    string content = Model.Content;
+    viewModel.Content = String.Empty;
+    var pageState = EnumHelper.GetSelectList<PageState>();
+    var mvvmFactory = Html.EfeMvvm<PageCreateOrEditViewModel>(new ViewConfigurations
+    {
+        PageHeader = "Pages",
+        IconName = "fa fa-file-text",
+        FormId = "pageForm",
+        ApiUrlRoot = Url.Action("CreateOrEdit", "Home"),
+        GridName = "pagesGrid",
+        ContainerId = "pagesContainer"
+    }, viewModel);
+}
+
+@section styles{
+    <link href="@Url.ComponentContent("~/lib/Grapes/css/grapes.min.css")" rel="stylesheet" />
+    <link href="@Url.ComponentContent("~/lib/Grapes/plugins/grapesjs-preset-webpage/grapesjs-preset-webpage.min.css")" rel="stylesheet" />
+    <link href="@Url.ComponentContent("~/css/site.css")" rel="stylesheet" />
+}
+
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.10.0/ckeditor.js"></script>
+    <script src="@Url.ComponentContent("~/lib/Grapes/grapes.min.js")"></script>
+    <script src="@Url.ComponentContent("~/lib/Grapes/plugins/grapesjs-preset-webpage/grapesjs-preset-webpage.min.js")"></script>
+    <script src="@Url.ComponentContent("~/lib/Grapes/plugins/grapesjs-plugin-ckeditor/grapesjs-plugin-ckeditor.min.js")"></script>
+    <script src="@Url.ComponentContent("~/lib/Grapes/plugins/grapesjs-blocks-bootstrap4/grapesjs-blocks-bootstrap4.min.js")"></script>
+    <script type="text/javascript">
+        var editor = grapesjs.init({
+            container: '#@gjsContainerId',
+            storageManager: { type: 'none' },
+            style: 'body{font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;}',
+            fromElement: true,
+            plugins: ['gjs-preset-webpage', 'gjs-plugin-ckeditor', 'grapesjs-blocks-bootstrap4'],
+            pluginsOpts: {
+                'gjs-preset-webpage': { },
+                'gjs-plugin-ckeditor': {},
+                'grapesjs-blocks-bootstrap4': {
+                    //gridDevicesPanel: true,
+                    //blocks: {
+                    //    // ...
+                    //},
+                    //blockCategories: {
+                    //    // ...
+                    //},
+                    //labels: {
+                    //    // ...
+                    //},
+                    //// ...
+                }
+            },
+            canvas: {
+                styles: [
+                    'https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css'
+                ],
+                scripts: [
+                    'https://code.jquery.com/jquery-3.3.1.slim.min.js',
+                    'https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js'
+                ],
+            }
+        });
+        editor.on('load', function () {
+            console.log("done")
+         });
+
+        var viewModel = {};
+        domready(function () {
+            function vmInitCallback(vm) {
+                vm.isNew = function () {
+                    return !(vm.id().length > 0);
+                }
+            };
+
+            viewModel = @(mvvmFactory.Build(initCallback: "vmInitCallback")) ;
+
+            viewModel.beforeCreate = function (data) {
+                viewModel.content(grapesjs.editors[0].getHtml());
+            };
+
+            viewModel.afterSuccess = function (data) {
+                if (data) {
+                    if (data.resultState == 1) {
+                        windows.location.href = "@Url.Action("Index", "Home")";
+                    } else {
+
+                    }
+                }
+            };
+
+        });
+    </script>
+}
+
+<div class="page-header">
+    <h1 class="page-title pl-1">
+        @if (!String.IsNullOrWhiteSpace(mvvmFactory.ViewConfigurations.IconName))
+        {
+            <i class="@mvvmFactory.ViewConfigurations.IconName mr-2"></i>
+        }
+        @mvvmFactory.ViewConfigurations.PageHeader
+        @if (mvvmFactory.ViewConfigurations.PageSubHeader != null)
+        {
+            <span> <i class="fa fa-caret-right ml-2 mr-2" aria-hidden="true"></i> @Html.Raw(mvvmFactory.ViewConfigurations.PageSubHeader)</span>
+        }
+    </h1>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div id="@(mvvmFactory.ContainerId)">
+            <form class="card" id="@(mvvmFactory.FormId)">
+
+                <div class="card-header">
+                    <h3 class="card-title">
+                        @mvvmFactory.ViewConfigurations.PageHeader
+
+                        <span data-bind="visible: isNew()" style="display: none;">
+                            <span class="small m-3"><i class="fa fa-angle-double-right" aria-hidden="true"></i></span>
+                            <span class="small">Yeni Kayıt</span>
+                        </span>
+
+                        <span>
+                            <span class="small m-3"><i class="fa fa-angle-double-right" aria-hidden="true"></i></span>
+                            <span class="small" data-bind="text: title"></span>
+                        </span>
+                    </h3>
+                    <div class="card-options">
+                    </div>
+                </div>
+                <div class="card-body no-padding-table">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="m-3 pb-3">
+                                <div class="form-group">
+                                    <label class="form-label" asp-for="Title"></label>
+                                    @mvvmFactory.TextBoxFor(x => x.Title).HtmlAttributes(new { @class = "form-control" })
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="form-label" asp-for="State"></label>
+                                            @(mvvmFactory.AutoCompleteFor(x => x.State).DataSource(source => source.Data(pageState)).AllowClear(true).DisableMinLength())
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="form-label" asp-for="Tags"></label>
+                                            @mvvmFactory.AutoCompleteFor(a => a.Tags).Multiple().EnableTags().InitialValues(Model.Tags)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-6">
+                        </div>
+                        <div class="col-6 text-right">
+                            @mvvmFactory.HiddenFor(k => k.Created)
+                            @mvvmFactory.HiddenFor(k => k.Modified)
+                            @mvvmFactory.HiddenFor(k => k.Id)
+                            @mvvmFactory.SubmitButton("Save").UpdateText("Update").IconClass("fe fe-save").HtmlAttributes(new { @class = "btn btn-primary ml-auto" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div id="@gjsContainerId">
+            @Html.Raw(content)
+        </div>
+    </div>
+</div>
+
+<br /><br /><br />

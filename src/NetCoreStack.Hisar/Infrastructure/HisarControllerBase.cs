@@ -96,5 +96,6 @@ namespace NetCoreStack.Hisar
             var type = this.GetType();
             return ControllerContext.ResolveViewName(type, name);
         }
+
     }
 }

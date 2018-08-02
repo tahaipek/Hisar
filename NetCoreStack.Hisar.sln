@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hisar.Component.ContentMana
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Admin.Tabler.Hosting", "test\Admin.Tabler.Hosting\Admin.Tabler.Hosting.csproj", "{15B37F96-CC84-4D19-84EF-A8D088BB9ECB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hisar.Component.Pages", "test\components\Hisar.Component.Pages\Hisar.Component.Pages.csproj", "{412D9D4B-D62B-4D8F-B344-B6C9E953CE3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,10 @@ Global
 		{15B37F96-CC84-4D19-84EF-A8D088BB9ECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15B37F96-CC84-4D19-84EF-A8D088BB9ECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15B37F96-CC84-4D19-84EF-A8D088BB9ECB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{412D9D4B-D62B-4D8F-B344-B6C9E953CE3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{412D9D4B-D62B-4D8F-B344-B6C9E953CE3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{412D9D4B-D62B-4D8F-B344-B6C9E953CE3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{412D9D4B-D62B-4D8F-B344-B6C9E953CE3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{F975485D-47C8-47B6-AC21-E0A494F5559F} = {78342CF0-FAFF-4FC8-A126-10B5610E441A}
 		{41B9F8F9-A41B-4B34-BE5B-9C80955B92B0} = {181B8C0C-9FAD-40C0-AE0A-257843CFF03C}
 		{15B37F96-CC84-4D19-84EF-A8D088BB9ECB} = {5CA075E2-B2E1-4D94-B0EF-4CB1BBB0D45A}
+		{412D9D4B-D62B-4D8F-B344-B6C9E953CE3C} = {181B8C0C-9FAD-40C0-AE0A-257843CFF03C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6797C236-8739-450E-A68C-1807245629AF}

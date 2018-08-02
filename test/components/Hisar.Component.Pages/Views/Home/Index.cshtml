@@ -1,0 +1,124 @@
+﻿@using NetCoreStack.Mvc
+@using Hisar.Component.Pages.Models
+@{
+    GetPagesListItem viewModel = null;
+
+    var mvvmFactory = Html.EfeMvvm<GetPagesListItem>(new ViewConfigurations
+    {
+        PageHeader = "Pages",
+        IconName = "fe fe-file-text",
+
+        GridName = "pagesGrid",
+        ContainerId = "pagesContainer"
+    }, viewModel);
+}
+
+<div id="@mvvmFactory.ContainerId" class="container">
+
+    <div class="page-header">
+        <h1 class="page-title pl-1">
+            @if (!String.IsNullOrWhiteSpace(mvvmFactory.ViewConfigurations.IconName))
+            {
+                <i class="@mvvmFactory.ViewConfigurations.IconName mr-2"></i>
+            }
+            @mvvmFactory.ViewConfigurations.PageHeader
+            @if (mvvmFactory.ViewConfigurations.PageSubHeader != null)
+            {
+                <span> <i class="fa fa-caret-right ml-2 mr-2" aria-hidden="true"></i> @Html.Raw(mvvmFactory.ViewConfigurations.PageSubHeader)</span>
+            }
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card" id="@mvvmFactory.FormId">
+                <div class="card-header">
+                    <h3 class="card-title">@mvvmFactory.ViewConfigurations.PageHeader</h3>
+                    <div class="card-options">
+                        <a href="@Url.Action("Create","Home")" class="btn btn-secondary btn-sm"><i class="fe fe-plus"></i> Yeni Kayıt</a>
+                    </div>
+                </div>
+                <div class="card-body no-padding-table table-has-buttons">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 table-vcenter">
+                            @{
+                                var gridComponent = Html.Efe().Grid<GetPagesListItem>
+                                    ()
+                                    .Name(mvvmFactory.ViewConfigurations.GridName)
+                                    .PageLength(PageLengths.Ten)
+                                    .DataSource(source => source.Ajax().Read("GetPages", "Home"))
+                                    .Events(events => events.Init("gridInitHandler"))
+                                    .BindableColumns(columns =>
+                                    {
+                                        columns.Bind(x => x.Title);
+                                        columns.TemplateColumn("State", "stateTemplate").DisableOrder();
+                                        columns.TemplateColumn("", "updateButtonTemplate").DisableOrder();
+                                    });
+
+                                gridComponent.FilterPanel("filterModal", "Filtre Uygula");
+                                gridComponent.Render();
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles{
+    <style>
+        table td:first-child { /*padding: 0 !important*/
+        }
+
+        table td:nth-child(2) {
+            width: 100px;
+        }
+
+        table th:nth-child(3) {
+            width: 75px;
+        }
+
+        table th:nth-child(4) {
+            width: 140px !important;
+        }
+    </style>
+}
+
+@section scripts {
+    <script>
+        var viewModel = {};
+        domready(function () {
+            viewModel = @(mvvmFactory.Build())
+        });
+
+        var gridInitHandler = function (e, settings, json) {
+        };
+
+        efe.templates.stateTemplate = function (data, type, row, meta) {
+            var state = row.state;
+
+            var template = '';
+            switch (state) {
+                case 1:
+                    template = '<span class="status-icon bg-warning"></span> Preview';
+                    break;
+                case 2:
+                    template = '<span class="status-icon bg-success"></span> Published';
+                    break;
+            }
+
+            var tmpl = _.template(template);
+            return tmpl(row);
+        }
+
+        efe.templates.updateButtonTemplate = function (data, type, row, meta) {
+            var updateButton = '<a class="btn btn-secondary btn-sm" href="<%=updateUrl%>?id=<%=id%>">Update</a>';
+            var template = updateButton;
+            var tmpl = _.template(template);
+            return tmpl(row);
+        }
+
+    </script>
+}

@@ -43,8 +43,6 @@ namespace NetCoreStack.Hisar
             var componentId = assembly.GetComponentId();
             ComponentAssemblyLookup.Add(componentId, assembly);
 
-            AssemblyLoadContext.Default.Resolving += DefaultResolving;
-
             if (cacheItems != null)
                 cacheItems.AddRange(assembly.GetTypesAttributes<HisarCacheAttribute>());
 
@@ -64,24 +62,10 @@ namespace NetCoreStack.Hisar
             {
                 throw ex;
             }
-            finally
-            {
-                AssemblyLoadContext.Default.Resolving -= null;
-            }
 
             var components = assembly.GetTypes().ToArray();
             var controllers = components.Where(c => IsController(c.GetTypeInfo())).ToList();
             builder.PartManager.ApplicationParts.Add(new TypesPart(components));
-        }
-
-        private Assembly DefaultResolving(AssemblyLoadContext loadContext, AssemblyName assemblyName)
-        {
-            if (assemblyName.Name == typeof(HisarAssemblyComponentsLoader).Assembly.GetName().Name)
-            {
-                return typeof(HisarAssemblyComponentsLoader).Assembly;
-            }
-
-            return null;
         }
 
         protected virtual bool IsController(TypeInfo typeInfo)

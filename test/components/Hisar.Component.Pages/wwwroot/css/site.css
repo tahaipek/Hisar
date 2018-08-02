@@ -1,0 +1,73 @@
+﻿.gjs-one-bg{background-color:transparent}
+.gjs-two-color{color:#636363}
+.gjs-four-color{color:#000}
+.gjs-pn-commands,.gjs-pn-views-container{box-shadow:none}
+.gjs-pn-views-container{padding:0;top:55px}
+.gjs-block-category{padding:0}
+.gjs-blocks-c{margin:10px}
+.gjs-pn-commands,.gjs-cv-canvas{width:73%}
+.gjs-pn-options{right:27%}
+.gjs-pn-views-container,.gjs-pn-views{width:25%}
+.gjs-pn-commands,.gjs-pn-views,.gjs-pn-views-container,.gjs-cv-canvas{background:#fff;border-bottom:0;border:1px solid rgba(0,40,100,.12);border-radius:3px!important;box-shadow:0 1px 2px 0 rgba(0,0,0,.05)!important}
+.gjs-cv-canvas{top:55px}
+.gjs-three-bg{background-color:#333;color:#fff}
+.gjs-frame{height:97%;width:97%}
+.gjs-pn-views-container::-webkit-scrollbar{width:6px;height:6px}
+.gjs-pn-views-container::-webkit-scrollbar-track{background:transparent;}
+.gjs-pn-views-container::-webkit-scrollbar-thumb{background:#ebeef3}
+.gjs-pn-views-container::-webkit-scrollbar-thumb:hover{background:#c2c6ce}
+.gjs-pn-views-container::-webkit-scrollbar-thumb:active{background:#c2c6ce}
+
+.gjs-block-category .gjs-title{border-bottom:1px solid rgba(0,40,100,.12); background: #fff;}
+
+.gjs-pn-btn {
+    padding: 0.1rem 0.1rem!important;
+    line-height: 1.33333333!important;
+    border-radius: 3px!important;
+    margin-right: .5rem;
+    font-weight: 400!important;
+    text-align: center!important;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    cursor: pointer;
+    letter-spacing: .03em;
+    min-width: 2rem;
+
+
+    color: #343a40;
+    background-color: transparent;
+    background-image: none;
+    /*border-color: #343a40;*/
+}
+
+.gjs-pn-buttons .gjs-pn-btn:last-child{
+    margin-right: 0;
+}
+
+.gjs-pn-btn:hover {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+.gjs-pn-buttons {
+    justify-content: flex-start;
+}
+.gjs-pn-panel{min-height: 40px;}
+.gjs-pn-panel:first-child .gjs-pn-buttons .gjs-pn-btn{display: none;}
+
+.gjs-pn-btn.gjs-pn-active {
+    background-color: rgba(0,0,0,0.15);
+    box-shadow: none;
+    color: #fff;
+    background-color: #343a40;
+    border-color: #343a40;
+    box-shadow: 0 0 0 2px rgba(52, 58, 64, 0.5);
+}
+.gjs-clm-tags #gjs-clm-new{ color: #000 ; background: #fff;}
